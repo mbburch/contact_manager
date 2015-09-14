@@ -146,18 +146,22 @@ RSpec.describe EmailAddressesController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested email_address" do
-      email_address = EmailAddress.create! valid_attributes
-      expect {
-        delete :destroy, {:id => email_address.to_param}, valid_session
-      }.to change(EmailAddress, :count).by(-1)
-    end
+    describe "with valid params" do
+      let(:sue) { Person.create(first_name: 'Sue', last_name: 'Smith')}
+      let(:valid_attributes) { {address: 'suesemail@aol.com', person_id: sue.id} }
 
-    it "redirects to the email_addresses list" do
-      email_address = EmailAddress.create! valid_attributes
-      delete :destroy, {:id => email_address.to_param}, valid_session
-      expect(response).to redirect_to(email_addresses_url)
+      it "destroys the requested email_address" do
+        email_address = EmailAddress.create! valid_attributes
+        expect {
+          delete :destroy, {:id => email_address.to_param}, valid_session
+        }.to change(EmailAddress, :count).by(-1)
+      end
+
+      it "redirects to the email_addresses person" do
+        email_address = EmailAddress.create! valid_attributes
+        delete :destroy, {:id => email_address.to_param}, valid_session
+        expect(response).to redirect_to(sue)
+      end
     end
   end
-
 end
